@@ -54,7 +54,7 @@ public class AlumnoCursoServiceImpl implements AlumnoCursoService {
 				
 				listAlumnoCursoDto.add(AlumnoCursoDto.builder()
 						.idAlumno(alumnoEntity.getId())
-						.nombreAlumno(alumnoEntity.getNombres() + "" + alumnoEntity.getApellidos())
+						.nombreAlumno(alumnoEntity.getNombres() + " " + alumnoEntity.getApellidos())
 						.estadoAlumno(alumnoEntity.getEstado())
 						.idCurso(cursoDto.getId())
 						.nombreCurso(cursoDto.getDescripcion())
@@ -63,8 +63,8 @@ public class AlumnoCursoServiceImpl implements AlumnoCursoService {
 			
 			return Util.getResponse(true, Constante.OPERATION_SUCCESS, listAlumnoCursoDto);
 		}catch(RetryableException ex){
-			log.error("Exception:"+ Constante.OPERATION_FAILED +" "+ ex);
-			return Util.getResponse(false, Constante.OPERATION_FAILED, null);
+			log.error("RetrytableException:"+ Constante.NO_SERVICE_AVAILABLE +" "+ ex);
+			return Util.getResponse(false, Constante.NO_SERVICE_AVAILABLE, null);
 		} catch (Exception e) {
 			log.error("Exception:"+ Constante.OPERATION_FAILED +" "+ e);
 			return Util.getResponse(false, Constante.OPERATION_FAILED, null);
@@ -102,8 +102,17 @@ public class AlumnoCursoServiceImpl implements AlumnoCursoService {
 
 	@Override
 	public ResponseDto createAlumnoCurso(AlumnoCursoDto curso) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			AlumnoCursoEntity alumnoCursoEntity = AlumnoCursoEntity.builder()
+				.idAlumno(curso.getIdAlumno())
+				.idCurso(curso.getIdCurso())
+				.build();
+			alumnoCursoRepository.save(alumnoCursoEntity);
+			
+			return Util.getResponse(true, Constante.OPERATION_SUCCESS, null);	
+		} catch (Exception e) {
+			return Util.getResponse(false, Constante.OPERATION_FAILED, null);
+		}
 	}
 
 	
